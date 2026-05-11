@@ -3,1049 +3,946 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BYH3 – Juokingi Videoai</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+<title>BYH3</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --pink: #f7a8c4;
-    --lavender: #c9b8f0;
-    --mint: #a8e6cf;
-    --peach: #ffcba4;
-    --cream: #fff8f0;
-    --dark: #1a0a2e;
-    --darker: #0d0618;
-    --accent: #ff6eb4;
-    --gold: #ffd700;
-    --text-muted: rgba(255,255,255,0.55);
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg:     #0e1210;
+  --bg2:    #131a14;
+  --bg3:    #1a2318;
+  --green:  #4a7c59;
+  --green2: #6aab7e;
+  --moss:   #2d4a35;
+  --grey:   #8a9688;
+  --grey2:  #b0b8aa;
+  --cream:  #d4cfc4;
+  --dim:    rgba(180,190,170,0.45);
+  --border: rgba(74,124,89,0.25);
+}
 
-  body {
-    background: var(--darker);
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-    overflow-x: hidden;
-  }
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Special Elite', cursive;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-  /* ANIMATED BG */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(201,184,240,0.18) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 80% at 80% 80%, rgba(247,168,196,0.15) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 50% at 50% 40%, rgba(168,230,207,0.08) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
-  }
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 48px;
+  height: 60px;
+  background: rgba(14,18,16,0.93);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  gap: 4px;
+}
 
-  /* NOISE TEXTURE */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.5;
-  }
+.nav-logo {
+  font-family: 'Caveat', cursive;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--green2);
+  text-decoration: none;
+  letter-spacing: 2px;
+  margin-right: auto;
+  cursor: pointer;
+}
 
-  /* LANG SWITCHER */
-  .lang-bar {
-    position: fixed;
-    top: 16px;
-    right: 20px;
-    z-index: 999;
-    display: flex;
-    gap: 6px;
-  }
-  .lang-btn {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #fff;
-    padding: 6px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    letter-spacing: 1px;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    backdrop-filter: blur(10px);
-  }
-  .lang-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
-  .lang-btn:hover { background: rgba(255,255,255,0.15); }
+.nav-btn {
+  background: none;
+  border: none;
+  color: var(--grey2);
+  font-family: 'Special Elite', cursive;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 7px 16px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.nav-btn:hover { color: var(--green2); }
+.nav-btn.active {
+  color: var(--green2);
+  background: rgba(74,124,89,0.15);
+  border-bottom: 1px solid var(--green);
+}
 
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    padding: 18px 40px;
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    backdrop-filter: blur(20px);
-    background: rgba(13,6,24,0.7);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 4px;
-    background: linear-gradient(135deg, var(--pink), var(--lavender), var(--mint));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-decoration: none;
-  }
-  .nav-links {
-    display: flex;
-    gap: 28px;
-    list-style: none;
-    margin-left: auto;
-    margin-right: 120px;
-  }
-  .nav-links a {
-    color: rgba(255,255,255,0.7);
-    text-decoration: none;
-    font-size: 13px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    transition: color 0.3s;
-  }
-  .nav-links a:hover { color: var(--pink); }
+.lang-toggle {
+  margin-left: 12px;
+  display: flex;
+  gap: 4px;
+  border-left: 1px solid var(--border);
+  padding-left: 12px;
+}
+.lang-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--dim);
+  font-family: 'Special Elite', cursive;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+.lang-btn.active { border-color: var(--green); color: var(--green2); }
 
-  /* HERO */
-  .hero {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 120px 40px 80px;
-  }
+/* PAGES */
+.page { display: none; padding-top: 60px; min-height: 100vh; }
+.page.active { display: block; }
 
-  /* CREW PHOTO */
-  .crew-photo-wrap {
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid transparent;
-    background: linear-gradient(var(--darker), var(--darker)) padding-box,
-                linear-gradient(135deg, var(--pink), var(--lavender), var(--mint)) border-box;
-    margin-bottom: 36px;
-    box-shadow: 0 0 60px rgba(247,168,196,0.3), 0 0 120px rgba(201,184,240,0.15);
-    animation: float 4s ease-in-out infinite;
-    position: relative;
-  }
-  .crew-photo-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-12px); }
-  }
+/* ===== HOME ===== */
+.home-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 60px);
+  align-items: stretch;
+}
 
-  /* STARS around photo */
-  .star {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    animation: twinkle 2s ease-in-out infinite;
-  }
-  @keyframes twinkle {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.3; transform: scale(0.5); }
-  }
+.home-left {
+  padding: 72px 60px 72px 72px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-  .hero-tag {
-    display: inline-block;
-    background: linear-gradient(135deg, rgba(247,168,196,0.2), rgba(201,184,240,0.2));
-    border: 1px solid rgba(247,168,196,0.3);
-    color: var(--pink);
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    padding: 6px 20px;
-    border-radius: 20px;
-    margin-bottom: 20px;
-  }
+.home-right {
+  padding: 72px 72px 72px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
 
-  .hero h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(72px, 14vw, 160px);
-    letter-spacing: 8px;
-    line-height: 0.9;
-    background: linear-gradient(135deg, #fff 0%, var(--pink) 40%, var(--lavender) 70%, var(--mint) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 12px;
-  }
+.scratch-label {
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  color: var(--green);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: block;
+}
 
-  .hero-sub {
-    font-size: clamp(14px, 2vw, 18px);
-    color: var(--text-muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 36px;
-  }
+.home-title {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(80px, 11vw, 140px);
+  font-weight: 700;
+  line-height: 0.9;
+  color: var(--green2);
+  margin-bottom: 24px;
+}
 
-  .hero-btns {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+.home-sub {
+  font-size: 16px;
+  color: var(--grey2);
+  line-height: 1.75;
+  max-width: 380px;
+  margin-bottom: 32px;
+}
 
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent), var(--lavender));
-    color: #fff;
-    border: none;
-    padding: 14px 36px;
-    border-radius: 50px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 1px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    box-shadow: 0 8px 32px rgba(255,110,180,0.35);
-  }
-  .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 16px 48px rgba(255,110,180,0.5);
-  }
+.home-btns { display: flex; gap: 12px; flex-wrap: wrap; }
 
-  .btn-secondary {
-    background: transparent;
-    color: rgba(255,255,255,0.8);
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 14px 36px;
-    border-radius: 50px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    letter-spacing: 1px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: all 0.3s;
-    text-transform: uppercase;
-  }
-  .btn-secondary:hover {
-    border-color: var(--pink);
-    color: var(--pink);
-    transform: translateY(-3px);
-  }
+.home-nav-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  max-width: 380px;
+}
 
-  /* STATS BAR */
-  .stats-bar {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    gap: 60px;
-    padding: 40px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    background: rgba(255,255,255,0.02);
-    flex-wrap: wrap;
-  }
-  .stat-item { text-align: center; }
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 42px;
-    letter-spacing: 2px;
-    background: linear-gradient(135deg, var(--pink), var(--lavender));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .stat-label {
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
+.hnc {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: left;
+  text-decoration: none;
+  display: block;
+}
+.hnc:hover {
+  border-color: var(--green);
+  background: rgba(74,124,89,0.1);
+  transform: translateY(-3px);
+}
+.hnc-title {
+  font-family: 'Caveat', cursive;
+  font-size: 19px;
+  color: var(--green2);
+  margin-bottom: 3px;
+}
+.hnc-desc { font-size: 11px; color: var(--dim); letter-spacing: 0.5px; }
 
-  /* SECTION */
-  section {
-    position: relative;
-    z-index: 1;
-    padding: 80px 40px;
-    max-width: 1300px;
-    margin: 0 auto;
-  }
+.crew-photo-home {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--green);
+  box-shadow: 0 0 50px rgba(74,124,89,0.2);
+}
+.crew-photo-home img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  filter: saturate(0.8) contrast(1.05);
+}
 
-  .section-label {
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 12px;
-  }
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(40px, 6vw, 72px);
-    letter-spacing: 3px;
-    background: linear-gradient(135deg, #fff, var(--lavender));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 48px;
-  }
+.home-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.tag {
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  color: var(--green);
+  border: 1px solid var(--border);
+  padding: 4px 14px;
+  border-radius: 20px;
+  background: rgba(74,124,89,0.07);
+}
 
-  /* VIDEO GRID */
-  .video-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
-  }
+/* ===== VIDEOS ===== */
+.page-header {
+  padding: 52px 72px 36px;
+  border-bottom: 1px solid var(--border);
+}
+.page-header h1 {
+  font-family: 'Caveat', cursive;
+  font-size: 60px;
+  font-weight: 700;
+  color: var(--green2);
+  margin-bottom: 6px;
+}
+.page-header p { color: var(--grey2); font-size: 14px; }
 
-  .video-card {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-    text-decoration: none;
-    display: block;
-    cursor: pointer;
-    position: relative;
-  }
-  .video-card:hover {
-    transform: translateY(-8px);
-    border-color: rgba(247,168,196,0.3);
-    box-shadow: 0 24px 60px rgba(247,168,196,0.15);
-  }
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
 
-  .video-thumb {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%;
-    overflow: hidden;
-    background: rgba(255,255,255,0.05);
-  }
-  .video-thumb img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-  }
-  .video-card:hover .video-thumb img { transform: scale(1.06); }
+.video-item {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  display: block;
+  transition: background 0.2s;
+  overflow: hidden;
+}
+.video-item:nth-child(3n) { border-right: none; }
+.video-item:hover { background: rgba(74,124,89,0.06); }
+.video-item.big { grid-column: span 2; }
 
-  .play-btn {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(13,6,24,0.4);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .video-card:hover .play-btn { opacity: 1; }
-  .play-circle {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), var(--lavender));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 32px rgba(255,110,180,0.5);
-  }
-  .play-circle svg { width: 20px; height: 20px; fill: #fff; margin-left: 3px; }
+.video-thumb-wrap {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  overflow: hidden;
+  background: var(--bg3);
+}
+.video-item.big .video-thumb-wrap { padding-bottom: 42%; }
 
-  .yt-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #ff0000;
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
+.video-thumb-wrap img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.7) brightness(0.85);
+  transition: all 0.4s;
+}
+.video-item:hover .video-thumb-wrap img {
+  filter: saturate(0.95) brightness(1);
+  transform: scale(1.04);
+}
 
-  .video-info {
-    padding: 16px 18px 18px;
-  }
-  .video-title {
-    font-size: 15px;
-    font-weight: 500;
-    color: rgba(255,255,255,0.9);
-    line-height: 1.4;
-    margin-bottom: 8px;
-  }
-  .video-meta {
-    font-size: 12px;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .video-meta span { display: flex; align-items: center; gap: 4px; }
+.play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14,18,16,0.45);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.video-item:hover .play-overlay { opacity: 1; }
+.play-ring {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--green2);
+  display: flex; align-items: center; justify-content: center;
+}
+.play-ring svg { width: 18px; height: 18px; fill: var(--green2); margin-left: 3px; }
 
-  /* FEATURED VIDEO (first one) */
-  .video-card.featured {
-    grid-column: span 2;
-  }
-  .video-card.featured .video-thumb { padding-bottom: 40%; }
-  @media (max-width: 700px) {
-    .video-card.featured { grid-column: span 1; }
-    .video-card.featured .video-thumb { padding-bottom: 56.25%; }
-  }
+.video-num {
+  position: absolute;
+  top: 10px; left: 10px;
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  color: var(--green2);
+  background: rgba(14,18,16,0.8);
+  padding: 2px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
 
-  /* HARDEN SECTION */
-  .harden-section {
-    background: linear-gradient(135deg, rgba(247,168,196,0.06), rgba(201,184,240,0.06));
-    border: 1px solid rgba(247,168,196,0.15);
-    border-radius: 24px;
-    padding: 48px;
-    margin: 0 auto;
-    position: relative;
-    overflow: hidden;
-    max-width: 1300px;
-  }
-  .harden-section::before {
-    content: '🏀';
-    position: absolute;
-    font-size: 200px;
-    right: -20px;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.06;
-  }
-  .harden-inner {
-    display: flex;
-    gap: 48px;
-    align-items: flex-start;
-    position: relative;
-    z-index: 1;
-    flex-wrap: wrap;
-  }
-  .harden-text { flex: 1; min-width: 260px; }
-  .harden-text h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 48px;
-    letter-spacing: 3px;
-    background: linear-gradient(135deg, var(--gold), var(--peach));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
-  }
-  .harden-text p {
-    color: var(--text-muted);
-    font-size: 14px;
-    line-height: 1.7;
-    margin-bottom: 20px;
-  }
-  .harden-highlights {
-    flex: 2;
-    min-width: 280px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-  }
-  .highlight-clip {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,215,0,0.15);
-    border-radius: 12px;
-    overflow: hidden;
-    text-decoration: none;
-    display: block;
-    transition: all 0.3s;
-  }
-  .highlight-clip:hover {
-    border-color: rgba(255,215,0,0.4);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(255,215,0,0.15);
-  }
-  .highlight-clip .thumb-mini {
-    width: 100%;
-    padding-bottom: 56.25%;
-    position: relative;
-    overflow: hidden;
-  }
-  .highlight-clip .thumb-mini img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .highlight-clip .clip-title {
-    padding: 10px 12px;
-    font-size: 12px;
-    color: rgba(255,255,255,0.8);
-    font-weight: 500;
-    line-height: 1.3;
-  }
+.video-info-bar {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+}
+.vi-title {
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  color: var(--cream);
+  margin-bottom: 2px;
+}
+.vi-sub { font-size: 10px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; }
+.vi-arrow {
+  font-family: 'Caveat', cursive;
+  font-size: 20px;
+  color: var(--green);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: all 0.3s;
+}
+.video-item:hover .vi-arrow { opacity: 1; transform: translateX(0); }
 
-  /* ABOUT */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
-    align-items: center;
-  }
-  @media (max-width: 700px) { .about-grid { grid-template-columns: 1fr; } }
-  .about-text p {
-    color: rgba(255,255,255,0.65);
-    font-size: 16px;
-    line-height: 1.8;
-    margin-bottom: 16px;
-  }
-  .about-photo {
-    border-radius: 20px;
-    overflow: hidden;
-    border: 2px solid rgba(247,168,196,0.2);
-    box-shadow: 0 24px 80px rgba(247,168,196,0.12);
-    aspect-ratio: 4/3;
-    position: relative;
-  }
-  .about-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-  }
-  .about-photo-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, rgba(13,6,24,0.9));
-    padding: 24px;
-  }
-  .about-photo-overlay p {
-    font-size: 13px;
-    color: rgba(255,255,255,0.7);
-    font-style: italic;
-  }
+/* ===== HARDEN ===== */
+.harden-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 60px);
+}
 
-  /* BADGE PILLS */
-  .pill {
-    display: inline-block;
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    margin: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pill-pink { background: rgba(247,168,196,0.15); color: var(--pink); border: 1px solid rgba(247,168,196,0.3); }
-  .pill-lav { background: rgba(201,184,240,0.15); color: var(--lavender); border: 1px solid rgba(201,184,240,0.3); }
-  .pill-mint { background: rgba(168,230,207,0.15); color: var(--mint); border: 1px solid rgba(168,230,207,0.3); }
+.harden-left {
+  border-right: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  min-height: 500px;
+}
+.harden-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  filter: saturate(0.6) contrast(1.1) brightness(0.7);
+  display: block;
+}
+.harden-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent 40%, var(--bg) 100%),
+              linear-gradient(to top, rgba(14,18,16,0.75) 0%, transparent 40%);
+}
+.harden-left-text {
+  position: absolute;
+  bottom: 44px;
+  left: 44px;
+}
+.harden-left-text span {
+  display: block;
+  font-size: 12px;
+  color: var(--grey2);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.harden-left-text h2 {
+  font-family: 'Caveat', cursive;
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--green2);
+  line-height: 1.05;
+}
 
-  /* FOOTER */
-  footer {
-    position: relative;
-    z-index: 1;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding: 48px 40px;
-    text-align: center;
-  }
-  .footer-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 48px;
-    letter-spacing: 8px;
-    background: linear-gradient(135deg, var(--pink), var(--lavender), var(--mint));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 16px;
-  }
-  footer p {
-    color: var(--text-muted);
-    font-size: 13px;
-    margin-bottom: 8px;
-  }
-  .footer-yt {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #ff0000;
-    color: #fff;
-    padding: 10px 24px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: 20px;
-    transition: all 0.3s;
-    letter-spacing: 0.5px;
-  }
-  .footer-yt:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(255,0,0,0.4); }
-  .footer-yt svg { width: 18px; height: 18px; fill: #fff; }
+.harden-right {
+  padding: 56px 64px;
+  overflow-y: auto;
+}
+.harden-right h3 {
+  font-family: 'Caveat', cursive;
+  font-size: 26px;
+  color: var(--green2);
+  margin-bottom: 10px;
+  margin-top: 32px;
+}
+.harden-right h3:first-child { margin-top: 0; }
+.harden-right p {
+  color: var(--grey2);
+  font-size: 15px;
+  line-height: 1.75;
+  margin-bottom: 14px;
+}
 
-  /* SCROLL REVEAL */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.hl-links { display: flex; flex-direction: column; gap: 8px; margin-top: 28px; }
+.hl-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 18px;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+.hl-link:hover {
+  border-color: var(--green);
+  background: rgba(74,124,89,0.1);
+  transform: translateX(5px);
+}
+.hl-num {
+  font-family: 'Caveat', cursive;
+  font-size: 22px;
+  color: var(--green);
+  min-width: 26px;
+}
+.hl-text { flex: 1; }
+.hl-title {
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  color: var(--cream);
+  margin-bottom: 2px;
+}
+.hl-sub { font-size: 10px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; }
+.hl-arrow { font-family: 'Caveat', cursive; font-size: 18px; color: var(--green); }
 
-  /* SCROLLING TICKER */
-  .ticker-wrap {
-    overflow: hidden;
-    white-space: nowrap;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    padding: 14px 0;
-    background: rgba(255,255,255,0.02);
-    position: relative;
-    z-index: 1;
-  }
-  .ticker {
-    display: inline-flex;
-    animation: ticker 25s linear infinite;
-    gap: 0;
-  }
-  .ticker span {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 16px;
-    letter-spacing: 4px;
-    color: var(--text-muted);
-    padding: 0 32px;
-  }
-  .ticker span.accent { color: var(--pink); }
-  @keyframes ticker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
+/* ===== ABOUT ===== */
+.about-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 60px);
+}
 
-  /* LT/EN toggle */
-  [data-en] { display: none; }
-  body.lang-en [data-lt] { display: none; }
-  body.lang-en [data-en] { display: block; }
-  span[data-en] { display: none; }
-  body.lang-en span[data-lt] { display: none; }
-  body.lang-en span[data-en] { display: inline; }
+.about-left {
+  padding: 60px 60px 60px 72px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.about-left h1 {
+  font-family: 'Caveat', cursive;
+  font-size: 68px;
+  font-weight: 700;
+  color: var(--green2);
+  line-height: 0.95;
+  margin-bottom: 28px;
+}
+.about-left p {
+  color: var(--grey2);
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 18px;
+  max-width: 420px;
+}
 
-  @media (max-width: 900px) {
-    nav { padding: 16px 20px; }
-    .nav-links { display: none; }
-    section { padding: 60px 20px; }
-    .stats-bar { gap: 32px; padding: 32px 20px; }
-    .harden-section { padding: 32px 20px; }
-  }
+.about-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin-top: 36px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  overflow: hidden;
+  max-width: 420px;
+}
+.fact { padding: 18px; background: var(--bg3); }
+.fact-val {
+  font-family: 'Caveat', cursive;
+  font-size: 34px;
+  color: var(--green2);
+  margin-bottom: 3px;
+}
+.fact-label { font-size: 11px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; }
+
+.about-right {
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+.crew-photo-full {
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.crew-photo-full img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  filter: saturate(0.7) contrast(1.05) brightness(0.78);
+}
+.crew-caption {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(14,18,16,0.9));
+  padding: 24px;
+}
+.crew-caption p {
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  color: var(--grey2);
+  font-style: italic;
+}
+.about-yt-block {
+  padding: 32px 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.about-yt-block p {
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+  color: var(--grey2);
+}
+
+/* BUTTONS */
+.btn-main {
+  display: inline-block;
+  background: var(--moss);
+  color: var(--cream);
+  border: 1px solid var(--green);
+  padding: 11px 26px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-family: 'Special Elite', cursive;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.btn-main:hover {
+  background: var(--green);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(74,124,89,0.28);
+}
+
+.btn-yt {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: #b80000;
+  color: #fff;
+  border: none;
+  padding: 11px 22px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-family: 'Special Elite', cursive;
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.btn-yt:hover { background: #d40000; transform: translateY(-2px); }
+.btn-yt svg { width: 15px; height: 15px; fill: #fff; }
+
+/* LANG */
+[data-en] { display: none; }
+body.en [data-lt] { display: none; }
+body.en [data-en] { display: block; }
+span[data-en] { display: none; }
+body.en span[data-lt] { display: none; }
+body.en span[data-en] { display: inline; }
+
+@media (max-width: 860px) {
+  .home-hero, .harden-layout, .about-layout { grid-template-columns: 1fr; }
+  .home-left { border-right: none; border-bottom: 1px solid var(--border); padding: 48px 24px; }
+  .home-right { padding: 40px 24px; }
+  .videos-grid { grid-template-columns: 1fr 1fr; }
+  .video-item.big { grid-column: span 2; }
+  nav { padding: 0 20px; }
+  .page-header { padding: 36px 24px 20px; }
+  .harden-right { padding: 36px 24px; }
+  .harden-left { min-height: 320px; }
+  .about-left { padding: 48px 24px; border-right: none; border-bottom: 1px solid var(--border); }
+  .crew-photo-home { width: 240px; height: 240px; }
+  .home-title { font-size: 80px; }
+}
+@media (max-width: 560px) {
+  .videos-grid { grid-template-columns: 1fr; }
+  .video-item.big, .video-item:nth-child(3n) { grid-column: span 1; border-right: none; }
+  .nav-btn { font-size: 10px; padding: 6px 10px; }
+}
 </style>
 </head>
 <body>
 
-<!-- LANG SWITCHER -->
-<div class="lang-bar">
-  <button class="lang-btn active" onclick="setLang('lt')" id="btn-lt">LT</button>
-  <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
-</div>
-
-<!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">BYH3</a>
-  <ul class="nav-links">
-    <li><a href="#videos"><span data-lt>Videoai</span><span data-en>Videos</span></a></li>
-    <li><a href="#harden"><span data-lt>Harden</span><span data-en>Harden</span></a></li>
-    <li><a href="#apie"><span data-lt>Apie mus</span><span data-en>About us</span></a></li>
-    <li><a href="https://www.youtube.com/@BYH3/videos" target="_blank">YouTube</a></li>
-  </ul>
+  <span class="nav-logo" onclick="goPage('home')">BYH3</span>
+  <button class="nav-btn active" onclick="goPage('home',this)">
+    <span data-lt>Pradžia</span><span data-en>Home</span>
+  </button>
+  <button class="nav-btn" onclick="goPage('videos',this)">
+    <span data-lt>Įrašai</span><span data-en>Videos</span>
+  </button>
+  <button class="nav-btn" onclick="goPage('harden',this)">Harden</button>
+  <button class="nav-btn" onclick="goPage('about',this)">
+    <span data-lt>Apie mus</span><span data-en>About</span>
+  </button>
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btn-lt" onclick="setLang('lt')">LT</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
 </nav>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="crew-photo-wrap" style="position:relative;">
-    <img src="1778524850314_image.png" alt="BYH3 komanda" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #f7a8c4, #c9b8f0)';">
-    <!-- Stars -->
-    <div class="star" style="background:var(--pink); top:-10px; left:30%; animation-delay:0s;"></div>
-    <div class="star" style="background:var(--lavender); top:20%; right:-14px; animation-delay:0.5s;"></div>
-    <div class="star" style="background:var(--mint); bottom:-8px; left:50%; animation-delay:1s;"></div>
-    <div class="star" style="background:var(--peach); bottom:20%; left:-12px; animation-delay:1.5s;"></div>
-  </div>
-
-  <div class="hero-tag">
-    <span data-lt>🎬 Juokingi videoai nuo Lietuvos</span>
-    <span data-en>🎬 Funny videos from Lithuania</span>
-  </div>
-  <h1>BYH3</h1>
-  <p class="hero-sub">
-    <span data-lt>Juokamės iki ryto ✦ Klaipėda</span>
-    <span data-en>Laughing till morning ✦ Klaipėda</span>
-  </p>
-  <div class="hero-btns">
-    <a href="#videos" class="btn-primary">
-      <span data-lt>Žiūrėti videoukus</span>
-      <span data-en>Watch videos</span>
-    </a>
-    <a href="https://www.youtube.com/@BYH3/videos" target="_blank" class="btn-secondary">YouTube ↗</a>
-  </div>
-</div>
-
-<!-- TICKER -->
-<div class="ticker-wrap">
-  <div class="ticker">
-    <span>BYH3</span>
-    <span class="accent">✦</span>
-    <span>JUOKINGI VIDEOAI</span>
-    <span class="accent">✦</span>
-    <span>KLAIPĖDA</span>
-    <span class="accent">✦</span>
-    <span>YOUTUBE KANALAS</span>
-    <span class="accent">✦</span>
-    <span>FUNNY VIDEOS</span>
-    <span class="accent">✦</span>
-    <span>BYH3</span>
-    <span class="accent">✦</span>
-    <span>JUOKINGI VIDEOAI</span>
-    <span class="accent">✦</span>
-    <span>KLAIPĖDA</span>
-    <span class="accent">✦</span>
-    <span>YOUTUBE KANALAS</span>
-    <span class="accent">✦</span>
-    <span>FUNNY VIDEOS</span>
-    <span class="accent">✦</span>
-  </div>
-</div>
-
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="stat-item">
-    <div class="stat-num">10+</div>
-    <div class="stat-label"><span data-lt>Videoukų</span><span data-en>Videos</span></div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">100%</div>
-    <div class="stat-label"><span data-lt>Grynas humoras</span><span data-en>Pure comedy</span></div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">3</div>
-    <div class="stat-label"><span data-lt>Draugai</span><span data-en>Friends</span></div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">∞</div>
-    <div class="stat-label"><span data-lt>Juokelių</span><span data-en>Laughs</span></div>
-  </div>
-</div>
-
-<!-- VIDEOS SECTION -->
-<section id="videos">
-  <p class="section-label reveal">
-    <span data-lt>🎥 Mūsų kūryba</span>
-    <span data-en>🎥 Our content</span>
-  </p>
-  <h2 class="section-title reveal">
-    <span data-lt>Visi videoai</span>
-    <span data-en>All videos</span>
-  </h2>
-
-  <div class="video-grid">
-
-    <!-- Featured -->
-    <a class="video-card featured reveal" href="https://www.youtube.com/watch?v=W9Qcu2g9gdQ" target="_blank">
-      <div class="video-thumb">
-        <img src="https://img.youtube.com/vi/W9Qcu2g9gdQ/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/W9Qcu2g9gdQ/hqdefault.jpg'">
-        <div class="yt-badge">YouTube</div>
-        <div class="play-btn">
-          <div class="play-circle">
-            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-          </div>
-        </div>
-      </div>
-      <div class="video-info">
-        <div class="video-title">
-          <span data-lt>🔥 Naujausias video – Žiūrėk!</span>
-          <span data-en>🔥 Latest video – Watch now!</span>
-        </div>
-        <div class="video-meta">
-          <span>📺 BYH3</span>
-          <span>▶ YouTube</span>
-        </div>
-      </div>
-    </a>
-
-    <!-- Video 2 -->
-    <a class="video-card reveal" href="https://www.youtube.com/watch?v=6VRunJfLxiU" target="_blank">
-      <div class="video-thumb">
-        <img src="https://img.youtube.com/vi/6VRunJfLxiU/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/6VRunJfLxiU/hqdefault.jpg'">
-        <div class="yt-badge">YouTube</div>
-        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-      </div>
-      <div class="video-info">
-        <div class="video-title">BYH3 Video #2</div>
-        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
-      </div>
-    </a>
-
-    <!-- Video 3 -->
-    <a class="video-card reveal" href="https://www.youtube.com/watch?v=M6bvhyh91Y8" target="_blank">
-      <div class="video-thumb">
-        <img src="https://img.youtube.com/vi/M6bvhyh91Y8/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/M6bvhyh91Y8/hqdefault.jpg'">
-        <div class="yt-badge">YouTube</div>
-        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-      </div>
-      <div class="video-info">
-        <div class="video-title">BYH3 Video #3</div>
-        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
-      </div>
-    </a>
-
-    <!-- Video 4 -->
-    <a class="video-card reveal" href="https://www.youtube.com/watch?v=2ak8rRRDen4" target="_blank">
-      <div class="video-thumb">
-        <img src="https://img.youtube.com/vi/2ak8rRRDen4/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/2ak8rRRDen4/hqdefault.jpg'">
-        <div class="yt-badge">YouTube</div>
-        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-      </div>
-      <div class="video-info">
-        <div class="video-title">BYH3 Video #4</div>
-        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
-      </div>
-    </a>
-
-    <!-- Video 5 -->
-    <a class="video-card reveal" href="https://www.youtube.com/watch?v=VaSYS8OVEjk" target="_blank">
-      <div class="video-thumb">
-        <img src="https://img.youtube.com/vi/VaSYS8OVEjk/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/VaSYS8OVEjk/hqdefault.jpg'">
-        <div class="yt-badge">YouTube</div>
-        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-      </div>
-      <div class="video-info">
-        <div class="video-title">BYH3 Video #5</div>
-        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
-      </div>
-    </a>
-
-    <!-- Video 6 -->
-    <a class="video-card reveal" href="https://www.youtube.com/watch?v=dASe-2Ewnq4" target="_blank">
-      <div class="video-thumb">
-        <img src="https://img.youtube.com/vi/dASe-2Ewnq4/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/dASe-2Ewnq4/hqdefault.jpg'">
-        <div class="yt-badge">YouTube</div>
-        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-      </div>
-      <div class="video-info">
-        <div class="video-title">BYH3 Video #6</div>
-        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
-      </div>
-    </a>
-
-    <!-- Video 7 -->
-    <a class="video-card reveal" href="https://www.youtube.com/watch?v=BR6Nwx3HMwM" target="_blank">
-      <div class="video-thumb">
-        <img src="https://img.youtube.com/vi/BR6Nwx3HMwM/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/BR6Nwx3HMwM/hqdefault.jpg'">
-        <div class="yt-badge">YouTube</div>
-        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-      </div>
-      <div class="video-info">
-        <div class="video-title">BYH3 Video #7</div>
-        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
-      </div>
-    </a>
-
-    <!-- Video 8 -->
-    <a class="video-card reveal" href="https://www.youtube.com/watch?v=MZlenEvnm-c" target="_blank">
-      <div class="video-thumb">
-        <img src="https://img.youtube.com/vi/MZlenEvnm-c/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/MZlenEvnm-c/hqdefault.jpg'">
-        <div class="yt-badge">YouTube</div>
-        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-      </div>
-      <div class="video-info">
-        <div class="video-title">BYH3 Video #8</div>
-        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
-      </div>
-    </a>
-
-    <!-- Video 9 -->
-    <a class="video-card reveal" href="https://www.youtube.com/watch?v=F2jCOQrWtXg" target="_blank">
-      <div class="video-thumb">
-        <img src="https://img.youtube.com/vi/F2jCOQrWtXg/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/F2jCOQrWtXg/hqdefault.jpg'">
-        <div class="yt-badge">YouTube</div>
-        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-      </div>
-      <div class="video-info">
-        <div class="video-title">BYH3 Video #9</div>
-        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
-      </div>
-    </a>
-
-    <!-- Video 10 -->
-    <a class="video-card reveal" href="https://www.youtube.com/watch?v=RAUTZAe3mkQ" target="_blank">
-      <div class="video-thumb">
-        <img src="https://img.youtube.com/vi/RAUTZAe3mkQ/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/RAUTZAe3mkQ/hqdefault.jpg'">
-        <div class="yt-badge">YouTube</div>
-        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-      </div>
-      <div class="video-info">
-        <div class="video-title">BYH3 Video #10</div>
-        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
-      </div>
-    </a>
-
-  </div>
-</section>
-
-<!-- HARDEN SECTION -->
-<div id="harden" style="position:relative;z-index:1;padding:0 40px;max-width:1380px;margin:0 auto;">
-<div class="harden-section reveal">
-  <div class="harden-inner">
-    <div class="harden-text">
-      <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">🏀 BONUS ZONE</p>
-      <h2>James<br>Harden</h2>
-      <p data-lt>Čia specialiai jums – geriausių Hardeno momentų rinkinys. Nes žaidimas be Hardeno – tai kaip BYH3 be juokelių. Neįmanoma.</p>
-      <p data-en>Just for you – the best James Harden highlight moments. Because basketball without Harden is like BYH3 without jokes. Impossible.</p>
-      <div>
-        <span class="pill pill-pink">Step-back 3</span>
-        <span class="pill pill-lav">Euro step</span>
-        <span class="pill pill-mint">And-1</span>
-        <span class="pill pill-pink">Crossover</span>
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="home-hero">
+    <div class="home-left">
+      <span class="scratch-label">
+        <span data-lt>Juokingi video įrašai</span>
+        <span data-en>Funny videos</span>
+      </span>
+      <div class="home-title">BYH3</div>
+      <p class="home-sub" data-lt>Trys draugai iš Šiaulių. Filmuojam save, juokiamės ir keliame į YouTube. Tiek.</p>
+      <p class="home-sub" data-en>Three friends from Šiauliai. We film ourselves, laugh, and put it on YouTube. That's it.</p>
+      <div class="home-btns">
+        <a href="https://www.youtube.com/@BYH3/videos" target="_blank" class="btn-yt">
+          <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+          YouTube
+        </a>
+        <button class="btn-main" onclick="goPage('videos',document.querySelectorAll('.nav-btn')[1])">
+          <span data-lt>Video įrašai</span><span data-en>Videos</span>
+        </button>
       </div>
     </div>
-    <div class="harden-highlights">
-      <a class="highlight-clip" href="https://www.youtube.com/results?search_query=james+harden+highlights+2024" target="_blank">
-        <div class="thumb-mini">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/James_Harden_2019.jpg/640px-James_Harden_2019.jpg" alt="Harden highlight" style="object-position:top;">
-        </div>
-        <div class="clip-title">
-          <span data-lt>🔥 Geriausios Hardeno akimirkos</span>
-          <span data-en>🔥 Best Harden moments</span>
-        </div>
-      </a>
-      <a class="highlight-clip" href="https://www.youtube.com/results?search_query=james+harden+step+back+compilation" target="_blank">
-        <div class="thumb-mini" style="background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(247,168,196,0.2));display:flex;align-items:center;justify-content:center;">
-          <span style="font-size:64px;">🏀</span>
-        </div>
-        <div class="clip-title">
-          <span data-lt>Step-back compilation</span>
-          <span data-en>Step-back compilation</span>
-        </div>
-      </a>
-      <a class="highlight-clip" href="https://www.youtube.com/results?search_query=james+harden+career+highlights" target="_blank">
-        <div class="thumb-mini" style="background:linear-gradient(135deg,rgba(201,184,240,0.2),rgba(255,215,0,0.15));display:flex;align-items:center;justify-content:center;">
-          <span style="font-size:64px;">👑</span>
-        </div>
-        <div class="clip-title">
-          <span data-lt>Karjeros highlighai</span>
-          <span data-en>Career highlights</span>
-        </div>
-      </a>
-    </div>
-  </div>
-</div>
-</div>
 
-<!-- ABOUT -->
-<section id="apie">
-  <p class="section-label reveal">
-    <span data-lt>👋 Kas mes?</span>
-    <span data-en>👋 Who are we?</span>
-  </p>
-  <h2 class="section-title reveal">
-    <span data-lt>Apie BYH3</span>
-    <span data-en>About BYH3</span>
-  </h2>
-  <div class="about-grid">
-    <div class="about-text reveal">
-      <p data-lt>BYH3 – tai trys draugai iš Klaipėdos, kurie filmuoja save kaip elgiasi ir žiūri kiek žmonių juoksis. Spoileris: juokiasi daug. 😂</p>
-      <p data-en>BYH3 is three friends from Klaipėda who film whatever happens and see how many people laugh. Spoiler: a lot. 😂</p>
-      <p data-lt>Mūsų filosofija paprasta – gyvenimas per rimtas, kad jo nelaukti. Tad filmuojam, juokiamės ir dalinomės su jumis.</p>
-      <p data-en>Our philosophy is simple – life is too serious not to enjoy it. So we film, laugh, and share it with you.</p>
-      <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
-        <span class="pill pill-pink">😂 Humoras</span>
-        <span class="pill pill-lav">🎬 YouTube</span>
-        <span class="pill pill-mint">🏀 Sportas</span>
-        <span class="pill pill-pink">🇱🇹 Lietuva</span>
+    <div class="home-right">
+      <div class="crew-photo-home">
+        <img src="1778524850314_image.png" alt="BYH3" onerror="this.parentElement.style.background='var(--bg3)';this.style.display='none';">
       </div>
-      <div style="margin-top:28px;">
-        <a href="https://www.youtube.com/@BYH3/videos" target="_blank" class="btn-primary" style="display:inline-block;">
-          <span data-lt>Sekti kanalą ↗</span>
-          <span data-en>Subscribe ↗</span>
+      <div class="home-tags">
+        <span class="tag">Šiauliai</span>
+        <span class="tag">YouTube</span>
+        <span class="tag" data-lt>3 draugai</span><span class="tag" data-en>3 friends</span>
+        <span class="tag" data-lt>Humoras</span><span class="tag" data-en>Comedy</span>
+      </div>
+      <div class="home-nav-cards">
+        <div class="hnc" onclick="goPage('videos',document.querySelectorAll('.nav-btn')[1])">
+          <div class="hnc-title" data-lt>Video įrašai</div>
+          <div class="hnc-title" data-en>Videos</div>
+          <div class="hnc-desc" data-lt>Visi 10 įrašų</div>
+          <div class="hnc-desc" data-en>All 10 videos</div>
+        </div>
+        <div class="hnc" onclick="goPage('harden',document.querySelectorAll('.nav-btn')[2])">
+          <div class="hnc-title">Harden</div>
+          <div class="hnc-desc">NBA highlights</div>
+        </div>
+        <div class="hnc" onclick="goPage('about',document.querySelectorAll('.nav-btn')[3])">
+          <div class="hnc-title" data-lt>Apie mus</div>
+          <div class="hnc-title" data-en>About us</div>
+          <div class="hnc-desc" data-lt>Kas mes</div>
+          <div class="hnc-desc" data-en>Who we are</div>
+        </div>
+        <a class="hnc" href="https://www.youtube.com/@BYH3/videos" target="_blank">
+          <div class="hnc-title">@BYH3</div>
+          <div class="hnc-desc">YouTube kanalas</div>
         </a>
       </div>
     </div>
-    <div class="about-photo reveal">
-      <img src="1778524850314_image.png" alt="BYH3 komanda" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,#1a0a2e,#2d1060)';">
-      <div class="about-photo-overlay">
-        <p data-lt>Naktiniai sesijos su futbolo kamuoliu. Klasika.</p>
-        <p data-en>Night sessions with a football. Classic.</p>
+  </div>
+</div>
+
+<!-- VIDEOS -->
+<div class="page" id="page-videos">
+  <div class="page-header">
+    <h1 data-lt>Video įrašai</h1>
+    <h1 data-en>Videos</h1>
+    <p data-lt>Visi BYH3 įrašai. Spusk ant bet kurio — atsidaro YouTube.</p>
+    <p data-en>All BYH3 videos. Click any one — opens on YouTube.</p>
+  </div>
+  <div class="videos-grid">
+
+    <a class="video-item big" href="https://www.youtube.com/watch?v=W9Qcu2g9gdQ" target="_blank">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/W9Qcu2g9gdQ/maxresdefault.jpg" alt="BYH3 #1" onerror="this.src='https://img.youtube.com/vi/W9Qcu2g9gdQ/hqdefault.jpg'">
+        <div class="play-overlay"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="video-num">01</div>
+      </div>
+      <div class="video-info-bar">
+        <div><div class="vi-title">BYH3 #1</div><div class="vi-sub">youtube.com</div></div>
+        <div class="vi-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="video-item" href="https://www.youtube.com/watch?v=6VRunJfLxiU" target="_blank">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/6VRunJfLxiU/maxresdefault.jpg" alt="BYH3 #2" onerror="this.src='https://img.youtube.com/vi/6VRunJfLxiU/hqdefault.jpg'">
+        <div class="play-overlay"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="video-num">02</div>
+      </div>
+      <div class="video-info-bar">
+        <div><div class="vi-title">BYH3 #2</div><div class="vi-sub">youtube.com</div></div>
+        <div class="vi-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="video-item" href="https://www.youtube.com/watch?v=M6bvhyh91Y8" target="_blank">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/M6bvhyh91Y8/maxresdefault.jpg" alt="BYH3 #3" onerror="this.src='https://img.youtube.com/vi/M6bvhyh91Y8/hqdefault.jpg'">
+        <div class="play-overlay"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="video-num">03</div>
+      </div>
+      <div class="video-info-bar">
+        <div><div class="vi-title">BYH3 #3</div><div class="vi-sub">youtube.com</div></div>
+        <div class="vi-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="video-item" href="https://www.youtube.com/watch?v=2ak8rRRDen4" target="_blank">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/2ak8rRRDen4/maxresdefault.jpg" alt="BYH3 #4" onerror="this.src='https://img.youtube.com/vi/2ak8rRRDen4/hqdefault.jpg'">
+        <div class="play-overlay"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="video-num">04</div>
+      </div>
+      <div class="video-info-bar">
+        <div><div class="vi-title">BYH3 #4</div><div class="vi-sub">youtube.com</div></div>
+        <div class="vi-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="video-item big" href="https://www.youtube.com/watch?v=VaSYS8OVEjk" target="_blank">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/VaSYS8OVEjk/maxresdefault.jpg" alt="BYH3 #5" onerror="this.src='https://img.youtube.com/vi/VaSYS8OVEjk/hqdefault.jpg'">
+        <div class="play-overlay"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="video-num">05</div>
+      </div>
+      <div class="video-info-bar">
+        <div><div class="vi-title">BYH3 #5</div><div class="vi-sub">youtube.com</div></div>
+        <div class="vi-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="video-item" href="https://www.youtube.com/watch?v=dASe-2Ewnq4" target="_blank">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/dASe-2Ewnq4/maxresdefault.jpg" alt="BYH3 #6" onerror="this.src='https://img.youtube.com/vi/dASe-2Ewnq4/hqdefault.jpg'">
+        <div class="play-overlay"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="video-num">06</div>
+      </div>
+      <div class="video-info-bar">
+        <div><div class="vi-title">BYH3 #6</div><div class="vi-sub">youtube.com</div></div>
+        <div class="vi-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="video-item" href="https://www.youtube.com/watch?v=BR6Nwx3HMwM" target="_blank">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/BR6Nwx3HMwM/maxresdefault.jpg" alt="BYH3 #7" onerror="this.src='https://img.youtube.com/vi/BR6Nwx3HMwM/hqdefault.jpg'">
+        <div class="play-overlay"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="video-num">07</div>
+      </div>
+      <div class="video-info-bar">
+        <div><div class="vi-title">BYH3 #7</div><div class="vi-sub">youtube.com</div></div>
+        <div class="vi-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="video-item" href="https://www.youtube.com/watch?v=MZlenEvnm-c" target="_blank">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/MZlenEvnm-c/maxresdefault.jpg" alt="BYH3 #8" onerror="this.src='https://img.youtube.com/vi/MZlenEvnm-c/hqdefault.jpg'">
+        <div class="play-overlay"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="video-num">08</div>
+      </div>
+      <div class="video-info-bar">
+        <div><div class="vi-title">BYH3 #8</div><div class="vi-sub">youtube.com</div></div>
+        <div class="vi-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="video-item" href="https://www.youtube.com/watch?v=F2jCOQrWtXg" target="_blank">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/F2jCOQrWtXg/maxresdefault.jpg" alt="BYH3 #9" onerror="this.src='https://img.youtube.com/vi/F2jCOQrWtXg/hqdefault.jpg'">
+        <div class="play-overlay"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="video-num">09</div>
+      </div>
+      <div class="video-info-bar">
+        <div><div class="vi-title">BYH3 #9</div><div class="vi-sub">youtube.com</div></div>
+        <div class="vi-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="video-item big" href="https://www.youtube.com/watch?v=RAUTZAe3mkQ" target="_blank">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/RAUTZAe3mkQ/maxresdefault.jpg" alt="BYH3 #10" onerror="this.src='https://img.youtube.com/vi/RAUTZAe3mkQ/hqdefault.jpg'">
+        <div class="play-overlay"><div class="play-ring"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="video-num">10</div>
+      </div>
+      <div class="video-info-bar">
+        <div><div class="vi-title">BYH3 #10</div><div class="vi-sub">youtube.com</div></div>
+        <div class="vi-arrow">→</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- HARDEN -->
+<div class="page" id="page-harden">
+  <div class="harden-layout">
+    <div class="harden-left">
+      <img class="harden-photo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/James_Harden_2019.jpg/640px-James_Harden_2019.jpg"
+        alt="James Harden">
+      <div class="harden-photo-overlay"></div>
+      <div class="harden-left-text">
+        <span>Philadelphia 76ers — NBA</span>
+        <h2>James<br>Harden</h2>
+      </div>
+    </div>
+    <div class="harden-right">
+      <h3 data-lt>Apie žaidėją</h3>
+      <h3 data-en>About the player</h3>
+      <p data-lt>James Harden žaidė Houston Rockets, Brooklyn Nets ir Philadelphia 76ers. MVP 2018 metais. Žinomas dėl step-back tritaškių ir gebėjimo išprovokuoti pražangas.</p>
+      <p data-en>James Harden played for Houston Rockets, Brooklyn Nets, and Philadelphia 76ers. MVP in 2018. Known for step-back threes and drawing fouls.</p>
+
+      <h3>Highlights</h3>
+      <p data-lt>Geriausi momentai YouTube. Spusk ir žiūrėk.</p>
+      <p data-en>Best moments on YouTube. Click and watch.</p>
+
+      <div class="hl-links">
+        <a class="hl-link" href="https://www.youtube.com/results?search_query=james+harden+best+highlights" target="_blank">
+          <div class="hl-num">01</div>
+          <div class="hl-text">
+            <div class="hl-title" data-lt>Geriausi momentai</div>
+            <div class="hl-title" data-en>Best highlights</div>
+            <div class="hl-sub">YouTube</div>
+          </div>
+          <div class="hl-arrow">→</div>
+        </a>
+        <a class="hl-link" href="https://www.youtube.com/results?search_query=james+harden+step+back+three+compilation" target="_blank">
+          <div class="hl-num">02</div>
+          <div class="hl-text">
+            <div class="hl-title">Step-back compilation</div>
+            <div class="hl-sub">YouTube</div>
+          </div>
+          <div class="hl-arrow">→</div>
+        </a>
+        <a class="hl-link" href="https://www.youtube.com/results?search_query=james+harden+50+point+game" target="_blank">
+          <div class="hl-num">03</div>
+          <div class="hl-text">
+            <div class="hl-title" data-lt>50+ taškų žaidimai</div>
+            <div class="hl-title" data-en>50+ point games</div>
+            <div class="hl-sub">YouTube</div>
+          </div>
+          <div class="hl-arrow">→</div>
+        </a>
+        <a class="hl-link" href="https://www.youtube.com/results?search_query=james+harden+2018+mvp+season" target="_blank">
+          <div class="hl-num">04</div>
+          <div class="hl-text">
+            <div class="hl-title" data-lt>MVP sezonas 2018</div>
+            <div class="hl-title" data-en>MVP season 2018</div>
+            <div class="hl-sub">YouTube</div>
+          </div>
+          <div class="hl-arrow">→</div>
+        </a>
+        <a class="hl-link" href="https://www.youtube.com/results?search_query=james+harden+career+highlights" target="_blank">
+          <div class="hl-num">05</div>
+          <div class="hl-text">
+            <div class="hl-title" data-lt>Visos karjeros rinkinys</div>
+            <div class="hl-title" data-en>Full career highlights</div>
+            <div class="hl-sub">YouTube</div>
+          </div>
+          <div class="hl-arrow">→</div>
+        </a>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">BYH3</div>
-  <p data-lt>Juokingi videoai iš Klaipėdos ✦ Tik YouTube</p>
-  <p data-en>Funny videos from Klaipėda ✦ YouTube only</p>
-  <br>
-  <a href="https://www.youtube.com/@BYH3/videos" target="_blank" class="footer-yt">
-    <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
-    <span data-lt>YouTube kanalas</span>
-    <span data-en>YouTube channel</span>
-  </a>
-  <p style="margin-top:32px;font-size:11px;letter-spacing:2px;text-transform:uppercase;">© 2025 BYH3 ✦ Klaipėda</p>
-</footer>
+<!-- ABOUT -->
+<div class="page" id="page-about">
+  <div class="about-layout">
+    <div class="about-left">
+      <h1>BYH3</h1>
+      <p data-lt>Trys draugai iš Šiaulių. Filmuojam save ir tai, kas atsitinka aplink. Nėra scenarijaus — tiesiog gyvenimas ir kamera.</p>
+      <p data-en>Three friends from Šiauliai. We film ourselves and what happens around. No script — just life and a camera.</p>
+      <p data-lt>Kanalas atsirado paprastai: norėjom juoktis ir norėjom, kad kiti juoktųsi kartu.</p>
+      <p data-en>The channel started simply: we wanted to laugh and wanted others to laugh with us.</p>
+
+      <div class="about-facts">
+        <div class="fact">
+          <div class="fact-val">3</div>
+          <div class="fact-label" data-lt>draugai</div>
+          <div class="fact-label" data-en>friends</div>
+        </div>
+        <div class="fact">
+          <div class="fact-val">10</div>
+          <div class="fact-label" data-lt>video įrašai</div>
+          <div class="fact-label" data-en>videos</div>
+        </div>
+        <div class="fact">
+          <div class="fact-val">LT</div>
+          <div class="fact-label">Šiauliai</div>
+        </div>
+        <div class="fact">
+          <div class="fact-val">@</div>
+          <div class="fact-label">BYH3</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-right">
+      <div class="crew-photo-full">
+        <img src="1778524850314_image.png" alt="BYH3 komanda" onerror="this.parentElement.style.background='var(--bg3)';this.style.display='none';">
+        <div class="crew-caption">
+          <p data-lt>BYH3 — naktinė sesija su kamuoliu, Šiauliai</p>
+          <p data-en>BYH3 — night session with a ball, Šiauliai</p>
+        </div>
+      </div>
+      <div class="about-yt-block">
+        <p data-lt>Rasi mus YouTube</p>
+        <p data-en>Find us on YouTube</p>
+        <a href="https://www.youtube.com/@BYH3/videos" target="_blank" class="btn-yt">
+          <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+          YouTube @BYH3
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
+function goPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else {
+    var map = {home:0, videos:1, harden:2, about:3};
+    if (map[id] !== undefined) document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
+  }
+  window.scrollTo(0,0);
+}
+
 function setLang(lang) {
   if (lang === 'en') {
-    document.body.classList.add('lang-en');
+    document.body.classList.add('en');
     document.getElementById('btn-lt').classList.remove('active');
     document.getElementById('btn-en').classList.add('active');
   } else {
-    document.body.classList.remove('lang-en');
+    document.body.classList.remove('en');
     document.getElementById('btn-en').classList.remove('active');
     document.getElementById('btn-lt').classList.add('active');
   }
 }
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), i * 80);
-    }
-  });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const target = document.querySelector(a.getAttribute('href'));
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-});
 </script>
 </body>
 </html>
