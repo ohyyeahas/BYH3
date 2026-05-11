@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BYH3 – Juokingi Videoai</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #f7a8c4;
+    --lavender: #c9b8f0;
+    --mint: #a8e6cf;
+    --peach: #ffcba4;
+    --cream: #fff8f0;
+    --dark: #1a0a2e;
+    --darker: #0d0618;
+    --accent: #ff6eb4;
+    --gold: #ffd700;
+    --text-muted: rgba(255,255,255,0.55);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--darker);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ANIMATED BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(201,184,240,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 80%, rgba(247,168,196,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 50% 40%, rgba(168,230,207,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NOISE TEXTURE */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* LANG SWITCHER */
+  .lang-bar {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 999;
+    display: flex;
+    gap: 6px;
+  }
+  .lang-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    backdrop-filter: blur(10px);
+  }
+  .lang-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .lang-btn:hover { background: rgba(255,255,255,0.15); }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    backdrop-filter: blur(20px);
+    background: rgba(13,6,24,0.7);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--pink), var(--lavender), var(--mint));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+    margin-left: auto;
+    margin-right: 120px;
+  }
+  .nav-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--pink); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+  }
+
+  /* CREW PHOTO */
+  .crew-photo-wrap {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid transparent;
+    background: linear-gradient(var(--darker), var(--darker)) padding-box,
+                linear-gradient(135deg, var(--pink), var(--lavender), var(--mint)) border-box;
+    margin-bottom: 36px;
+    box-shadow: 0 0 60px rgba(247,168,196,0.3), 0 0 120px rgba(201,184,240,0.15);
+    animation: float 4s ease-in-out infinite;
+    position: relative;
+  }
+  .crew-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+
+  /* STARS around photo */
+  .star {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: twinkle 2s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.5); }
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(247,168,196,0.2), rgba(201,184,240,0.2));
+    border: 1px solid rgba(247,168,196,0.3);
+    color: var(--pink);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 14vw, 160px);
+    letter-spacing: 8px;
+    line-height: 0.9;
+    background: linear-gradient(135deg, #fff 0%, var(--pink) 40%, var(--lavender) 70%, var(--mint) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  .hero-sub {
+    font-size: clamp(14px, 2vw, 18px);
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--lavender));
+    color: #fff;
+    border: none;
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    box-shadow: 0 8px 32px rgba(255,110,180,0.35);
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(255,110,180,0.5);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+    text-transform: uppercase;
+  }
+  .btn-secondary:hover {
+    border-color: var(--pink);
+    color: var(--pink);
+    transform: translateY(-3px);
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    padding: 40px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    flex-wrap: wrap;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, var(--pink), var(--lavender));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* SECTION */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 40px;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 72px);
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #fff, var(--lavender));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 48px;
+  }
+
+  /* VIDEO GRID */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  .video-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+    position: relative;
+  }
+  .video-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(247,168,196,0.3);
+    box-shadow: 0 24px 60px rgba(247,168,196,0.15);
+  }
+
+  .video-thumb {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    overflow: hidden;
+    background: rgba(255,255,255,0.05);
+  }
+  .video-thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .video-card:hover .video-thumb img { transform: scale(1.06); }
+
+  .play-btn {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(13,6,24,0.4);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .video-card:hover .play-btn { opacity: 1; }
+  .play-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--lavender));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(255,110,180,0.5);
+  }
+  .play-circle svg { width: 20px; height: 20px; fill: #fff; margin-left: 3px; }
+
+  .yt-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff0000;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .video-info {
+    padding: 16px 18px 18px;
+  }
+  .video-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.9);
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .video-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .video-meta span { display: flex; align-items: center; gap: 4px; }
+
+  /* FEATURED VIDEO (first one) */
+  .video-card.featured {
+    grid-column: span 2;
+  }
+  .video-card.featured .video-thumb { padding-bottom: 40%; }
+  @media (max-width: 700px) {
+    .video-card.featured { grid-column: span 1; }
+    .video-card.featured .video-thumb { padding-bottom: 56.25%; }
+  }
+
+  /* HARDEN SECTION */
+  .harden-section {
+    background: linear-gradient(135deg, rgba(247,168,196,0.06), rgba(201,184,240,0.06));
+    border: 1px solid rgba(247,168,196,0.15);
+    border-radius: 24px;
+    padding: 48px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    max-width: 1300px;
+  }
+  .harden-section::before {
+    content: '🏀';
+    position: absolute;
+    font-size: 200px;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.06;
+  }
+  .harden-inner {
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+  .harden-text { flex: 1; min-width: 260px; }
+  .harden-text h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, var(--gold), var(--peach));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  .harden-text p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .harden-highlights {
+    flex: 2;
+    min-width: 280px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .highlight-clip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,215,0,0.15);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    transition: all 0.3s;
+  }
+  .highlight-clip:hover {
+    border-color: rgba(255,215,0,0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(255,215,0,0.15);
+  }
+  .highlight-clip .thumb-mini {
+    width: 100%;
+    padding-bottom: 56.25%;
+    position: relative;
+    overflow: hidden;
+  }
+  .highlight-clip .thumb-mini img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .highlight-clip .clip-title {
+    padding: 10px 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (max-width: 700px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-text p {
+    color: rgba(255,255,255,0.65);
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .about-photo {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid rgba(247,168,196,0.2);
+    box-shadow: 0 24px 80px rgba(247,168,196,0.12);
+    aspect-ratio: 4/3;
+    position: relative;
+  }
+  .about-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+  .about-photo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(13,6,24,0.9));
+    padding: 24px;
+  }
+  .about-photo-overlay p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    font-style: italic;
+  }
+
+  /* BADGE PILLS */
+  .pill {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 4px;
+    letter-spacing: 0.5px;
+  }
+  .pill-pink { background: rgba(247,168,196,0.15); color: var(--pink); border: 1px solid rgba(247,168,196,0.3); }
+  .pill-lav { background: rgba(201,184,240,0.15); color: var(--lavender); border: 1px solid rgba(201,184,240,0.3); }
+  .pill-mint { background: rgba(168,230,207,0.15); color: var(--mint); border: 1px solid rgba(168,230,207,0.3); }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 48px 40px;
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 8px;
+    background: linear-gradient(135deg, var(--pink), var(--lavender), var(--mint));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+  footer p {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  .footer-yt {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ff0000;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: all 0.3s;
+    letter-spacing: 0.5px;
+  }
+  .footer-yt:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(255,0,0,0.4); }
+  .footer-yt svg { width: 18px; height: 18px; fill: #fff; }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* SCROLLING TICKER */
+  .ticker-wrap {
+    overflow: hidden;
+    white-space: nowrap;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 14px 0;
+    background: rgba(255,255,255,0.02);
+    position: relative;
+    z-index: 1;
+  }
+  .ticker {
+    display: inline-flex;
+    animation: ticker 25s linear infinite;
+    gap: 0;
+  }
+  .ticker span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 4px;
+    color: var(--text-muted);
+    padding: 0 32px;
+  }
+  .ticker span.accent { color: var(--pink); }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* LT/EN toggle */
+  [data-en] { display: none; }
+  body.lang-en [data-lt] { display: none; }
+  body.lang-en [data-en] { display: block; }
+  span[data-en] { display: none; }
+  body.lang-en span[data-lt] { display: none; }
+  body.lang-en span[data-en] { display: inline; }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    section { padding: 60px 20px; }
+    .stats-bar { gap: 32px; padding: 32px 20px; }
+    .harden-section { padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LANG SWITCHER -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('lt')" id="btn-lt">LT</button>
+  <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">BYH3</a>
+  <ul class="nav-links">
+    <li><a href="#videos"><span data-lt>Videoai</span><span data-en>Videos</span></a></li>
+    <li><a href="#harden"><span data-lt>Harden</span><span data-en>Harden</span></a></li>
+    <li><a href="#apie"><span data-lt>Apie mus</span><span data-en>About us</span></a></li>
+    <li><a href="https://www.youtube.com/@BYH3/videos" target="_blank">YouTube</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="crew-photo-wrap" style="position:relative;">
+    <img src="1778524850314_image.png" alt="BYH3 komanda" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #f7a8c4, #c9b8f0)';">
+    <!-- Stars -->
+    <div class="star" style="background:var(--pink); top:-10px; left:30%; animation-delay:0s;"></div>
+    <div class="star" style="background:var(--lavender); top:20%; right:-14px; animation-delay:0.5s;"></div>
+    <div class="star" style="background:var(--mint); bottom:-8px; left:50%; animation-delay:1s;"></div>
+    <div class="star" style="background:var(--peach); bottom:20%; left:-12px; animation-delay:1.5s;"></div>
+  </div>
+
+  <div class="hero-tag">
+    <span data-lt>🎬 Juokingi videoai nuo Lietuvos</span>
+    <span data-en>🎬 Funny videos from Lithuania</span>
+  </div>
+  <h1>BYH3</h1>
+  <p class="hero-sub">
+    <span data-lt>Juokamės iki ryto ✦ Klaipėda</span>
+    <span data-en>Laughing till morning ✦ Klaipėda</span>
+  </p>
+  <div class="hero-btns">
+    <a href="#videos" class="btn-primary">
+      <span data-lt>Žiūrėti videoukus</span>
+      <span data-en>Watch videos</span>
+    </a>
+    <a href="https://www.youtube.com/@BYH3/videos" target="_blank" class="btn-secondary">YouTube ↗</a>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>BYH3</span>
+    <span class="accent">✦</span>
+    <span>JUOKINGI VIDEOAI</span>
+    <span class="accent">✦</span>
+    <span>KLAIPĖDA</span>
+    <span class="accent">✦</span>
+    <span>YOUTUBE KANALAS</span>
+    <span class="accent">✦</span>
+    <span>FUNNY VIDEOS</span>
+    <span class="accent">✦</span>
+    <span>BYH3</span>
+    <span class="accent">✦</span>
+    <span>JUOKINGI VIDEOAI</span>
+    <span class="accent">✦</span>
+    <span>KLAIPĖDA</span>
+    <span class="accent">✦</span>
+    <span>YOUTUBE KANALAS</span>
+    <span class="accent">✦</span>
+    <span>FUNNY VIDEOS</span>
+    <span class="accent">✦</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num">10+</div>
+    <div class="stat-label"><span data-lt>Videoukų</span><span data-en>Videos</span></div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">100%</div>
+    <div class="stat-label"><span data-lt>Grynas humoras</span><span data-en>Pure comedy</span></div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">3</div>
+    <div class="stat-label"><span data-lt>Draugai</span><span data-en>Friends</span></div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">∞</div>
+    <div class="stat-label"><span data-lt>Juokelių</span><span data-en>Laughs</span></div>
+  </div>
+</div>
+
+<!-- VIDEOS SECTION -->
+<section id="videos">
+  <p class="section-label reveal">
+    <span data-lt>🎥 Mūsų kūryba</span>
+    <span data-en>🎥 Our content</span>
+  </p>
+  <h2 class="section-title reveal">
+    <span data-lt>Visi videoai</span>
+    <span data-en>All videos</span>
+  </h2>
+
+  <div class="video-grid">
+
+    <!-- Featured -->
+    <a class="video-card featured reveal" href="https://www.youtube.com/watch?v=W9Qcu2g9gdQ" target="_blank">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/W9Qcu2g9gdQ/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/W9Qcu2g9gdQ/hqdefault.jpg'">
+        <div class="yt-badge">YouTube</div>
+        <div class="play-btn">
+          <div class="play-circle">
+            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">
+          <span data-lt>🔥 Naujausias video – Žiūrėk!</span>
+          <span data-en>🔥 Latest video – Watch now!</span>
+        </div>
+        <div class="video-meta">
+          <span>📺 BYH3</span>
+          <span>▶ YouTube</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Video 2 -->
+    <a class="video-card reveal" href="https://www.youtube.com/watch?v=6VRunJfLxiU" target="_blank">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/6VRunJfLxiU/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/6VRunJfLxiU/hqdefault.jpg'">
+        <div class="yt-badge">YouTube</div>
+        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">BYH3 Video #2</div>
+        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
+      </div>
+    </a>
+
+    <!-- Video 3 -->
+    <a class="video-card reveal" href="https://www.youtube.com/watch?v=M6bvhyh91Y8" target="_blank">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/M6bvhyh91Y8/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/M6bvhyh91Y8/hqdefault.jpg'">
+        <div class="yt-badge">YouTube</div>
+        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">BYH3 Video #3</div>
+        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
+      </div>
+    </a>
+
+    <!-- Video 4 -->
+    <a class="video-card reveal" href="https://www.youtube.com/watch?v=2ak8rRRDen4" target="_blank">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/2ak8rRRDen4/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/2ak8rRRDen4/hqdefault.jpg'">
+        <div class="yt-badge">YouTube</div>
+        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">BYH3 Video #4</div>
+        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
+      </div>
+    </a>
+
+    <!-- Video 5 -->
+    <a class="video-card reveal" href="https://www.youtube.com/watch?v=VaSYS8OVEjk" target="_blank">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/VaSYS8OVEjk/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/VaSYS8OVEjk/hqdefault.jpg'">
+        <div class="yt-badge">YouTube</div>
+        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">BYH3 Video #5</div>
+        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
+      </div>
+    </a>
+
+    <!-- Video 6 -->
+    <a class="video-card reveal" href="https://www.youtube.com/watch?v=dASe-2Ewnq4" target="_blank">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/dASe-2Ewnq4/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/dASe-2Ewnq4/hqdefault.jpg'">
+        <div class="yt-badge">YouTube</div>
+        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">BYH3 Video #6</div>
+        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
+      </div>
+    </a>
+
+    <!-- Video 7 -->
+    <a class="video-card reveal" href="https://www.youtube.com/watch?v=BR6Nwx3HMwM" target="_blank">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/BR6Nwx3HMwM/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/BR6Nwx3HMwM/hqdefault.jpg'">
+        <div class="yt-badge">YouTube</div>
+        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">BYH3 Video #7</div>
+        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
+      </div>
+    </a>
+
+    <!-- Video 8 -->
+    <a class="video-card reveal" href="https://www.youtube.com/watch?v=MZlenEvnm-c" target="_blank">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/MZlenEvnm-c/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/MZlenEvnm-c/hqdefault.jpg'">
+        <div class="yt-badge">YouTube</div>
+        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">BYH3 Video #8</div>
+        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
+      </div>
+    </a>
+
+    <!-- Video 9 -->
+    <a class="video-card reveal" href="https://www.youtube.com/watch?v=F2jCOQrWtXg" target="_blank">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/F2jCOQrWtXg/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/F2jCOQrWtXg/hqdefault.jpg'">
+        <div class="yt-badge">YouTube</div>
+        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">BYH3 Video #9</div>
+        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
+      </div>
+    </a>
+
+    <!-- Video 10 -->
+    <a class="video-card reveal" href="https://www.youtube.com/watch?v=RAUTZAe3mkQ" target="_blank">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/RAUTZAe3mkQ/maxresdefault.jpg" alt="BYH3 video" onerror="this.src='https://img.youtube.com/vi/RAUTZAe3mkQ/hqdefault.jpg'">
+        <div class="yt-badge">YouTube</div>
+        <div class="play-btn"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">BYH3 Video #10</div>
+        <div class="video-meta"><span>📺 BYH3</span><span>▶ YouTube</span></div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- HARDEN SECTION -->
+<div id="harden" style="position:relative;z-index:1;padding:0 40px;max-width:1380px;margin:0 auto;">
+<div class="harden-section reveal">
+  <div class="harden-inner">
+    <div class="harden-text">
+      <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">🏀 BONUS ZONE</p>
+      <h2>James<br>Harden</h2>
+      <p data-lt>Čia specialiai jums – geriausių Hardeno momentų rinkinys. Nes žaidimas be Hardeno – tai kaip BYH3 be juokelių. Neįmanoma.</p>
+      <p data-en>Just for you – the best James Harden highlight moments. Because basketball without Harden is like BYH3 without jokes. Impossible.</p>
+      <div>
+        <span class="pill pill-pink">Step-back 3</span>
+        <span class="pill pill-lav">Euro step</span>
+        <span class="pill pill-mint">And-1</span>
+        <span class="pill pill-pink">Crossover</span>
+      </div>
+    </div>
+    <div class="harden-highlights">
+      <a class="highlight-clip" href="https://www.youtube.com/results?search_query=james+harden+highlights+2024" target="_blank">
+        <div class="thumb-mini">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/James_Harden_2019.jpg/640px-James_Harden_2019.jpg" alt="Harden highlight" style="object-position:top;">
+        </div>
+        <div class="clip-title">
+          <span data-lt>🔥 Geriausios Hardeno akimirkos</span>
+          <span data-en>🔥 Best Harden moments</span>
+        </div>
+      </a>
+      <a class="highlight-clip" href="https://www.youtube.com/results?search_query=james+harden+step+back+compilation" target="_blank">
+        <div class="thumb-mini" style="background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(247,168,196,0.2));display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:64px;">🏀</span>
+        </div>
+        <div class="clip-title">
+          <span data-lt>Step-back compilation</span>
+          <span data-en>Step-back compilation</span>
+        </div>
+      </a>
+      <a class="highlight-clip" href="https://www.youtube.com/results?search_query=james+harden+career+highlights" target="_blank">
+        <div class="thumb-mini" style="background:linear-gradient(135deg,rgba(201,184,240,0.2),rgba(255,215,0,0.15));display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:64px;">👑</span>
+        </div>
+        <div class="clip-title">
+          <span data-lt>Karjeros highlighai</span>
+          <span data-en>Career highlights</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ABOUT -->
+<section id="apie">
+  <p class="section-label reveal">
+    <span data-lt>👋 Kas mes?</span>
+    <span data-en>👋 Who are we?</span>
+  </p>
+  <h2 class="section-title reveal">
+    <span data-lt>Apie BYH3</span>
+    <span data-en>About BYH3</span>
+  </h2>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p data-lt>BYH3 – tai trys draugai iš Klaipėdos, kurie filmuoja save kaip elgiasi ir žiūri kiek žmonių juoksis. Spoileris: juokiasi daug. 😂</p>
+      <p data-en>BYH3 is three friends from Klaipėda who film whatever happens and see how many people laugh. Spoiler: a lot. 😂</p>
+      <p data-lt>Mūsų filosofija paprasta – gyvenimas per rimtas, kad jo nelaukti. Tad filmuojam, juokiamės ir dalinomės su jumis.</p>
+      <p data-en>Our philosophy is simple – life is too serious not to enjoy it. So we film, laugh, and share it with you.</p>
+      <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
+        <span class="pill pill-pink">😂 Humoras</span>
+        <span class="pill pill-lav">🎬 YouTube</span>
+        <span class="pill pill-mint">🏀 Sportas</span>
+        <span class="pill pill-pink">🇱🇹 Lietuva</span>
+      </div>
+      <div style="margin-top:28px;">
+        <a href="https://www.youtube.com/@BYH3/videos" target="_blank" class="btn-primary" style="display:inline-block;">
+          <span data-lt>Sekti kanalą ↗</span>
+          <span data-en>Subscribe ↗</span>
+        </a>
+      </div>
+    </div>
+    <div class="about-photo reveal">
+      <img src="1778524850314_image.png" alt="BYH3 komanda" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,#1a0a2e,#2d1060)';">
+      <div class="about-photo-overlay">
+        <p data-lt>Naktiniai sesijos su futbolo kamuoliu. Klasika.</p>
+        <p data-en>Night sessions with a football. Classic.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">BYH3</div>
+  <p data-lt>Juokingi videoai iš Klaipėdos ✦ Tik YouTube</p>
+  <p data-en>Funny videos from Klaipėda ✦ YouTube only</p>
+  <br>
+  <a href="https://www.youtube.com/@BYH3/videos" target="_blank" class="footer-yt">
+    <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+    <span data-lt>YouTube kanalas</span>
+    <span data-en>YouTube channel</span>
+  </a>
+  <p style="margin-top:32px;font-size:11px;letter-spacing:2px;text-transform:uppercase;">© 2025 BYH3 ✦ Klaipėda</p>
+</footer>
+
+<script>
+function setLang(lang) {
+  if (lang === 'en') {
+    document.body.classList.add('lang-en');
+    document.getElementById('btn-lt').classList.remove('active');
+    document.getElementById('btn-en').classList.add('active');
+  } else {
+    document.body.classList.remove('lang-en');
+    document.getElementById('btn-en').classList.remove('active');
+    document.getElementById('btn-lt').classList.add('active');
+  }
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
